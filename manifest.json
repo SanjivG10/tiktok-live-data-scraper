@@ -1,0 +1,16 @@
+{
+  "name": "Tiktok live data scraper",
+  "description": "Trying to build a tiktok comment and gifts scrapping thing from live streams",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.tiktok.com/*/live*"],
+      "js": ["content.js", "jquery.js"]
+    }
+  ],
+  "permissions": ["storage", "activeTab", "scripting"]
+}
