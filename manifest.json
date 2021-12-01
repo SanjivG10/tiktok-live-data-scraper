@@ -8,9 +8,12 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://*.tiktok.com/*/live*"],
-      "js": ["content.js", "jquery.js"]
+      "matches": ["https://*.tiktok.com/@*"],
+      "js": ["utils.js", "jquery.js", "content.js", "follow.js"]
     }
   ],
-  "permissions": ["storage", "activeTab", "scripting"]
+  "permissions": ["storage", "activeTab", "scripting", "tabs"],
+  "background": {
+    "service_worker": "background.js"
+  }
 }
