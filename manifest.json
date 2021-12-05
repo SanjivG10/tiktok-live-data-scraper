@@ -9,15 +9,7 @@
   "content_scripts": [
     {
       "matches": ["https://*.tiktok.com/@*"],
-      "js": [
-        "utils.js",
-        "jquery.js",
-        "mutation.js",
-        "data.js",
-        "content.js",
-        "follow.js",
-        "data.js"
-      ]
+      "js": ["utils.js", "jquery.js", "mutation.js", "content.js", "live.js"]
     }
   ],
   "permissions": ["storage", "activeTab", "scripting", "tabs"],
