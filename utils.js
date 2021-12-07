@@ -62,14 +62,27 @@ function scrapUserDetails(username) {
       return;
     }
 
-    scrappedUserDetails[username] = { videos: videoData, img: userImage };
+    const data = { videos: videoData, img: userImage };
 
-    chrome.storage.local.set({
-      userInfo: {
-        username,
-        ...scrappedUserDetails[username],
-        date: new Date().getTime(),
-      },
+    scrappedUserDetails[username] = data;
+
+    chrome.runtime.sendMessage({
+      type: "EXECUTE_SCRIPT",
+      data: { username, data },
     });
+    // console.log({
+    //   username,
+    //   ...scrappedUserDetails[username],
+    //   date: new Date(),
+    // });
+
+    // chrome.storage.local.clear(() => {
+    //   chrome.storage.local.set({
+    //     info: {
+    //       username,
+    //       ...scrappedUserDetails[username],
+    //     },
+    //   });
+    // });
   }, 1000 * 10);
 }

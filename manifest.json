@@ -13,6 +13,7 @@
     }
   ],
   "permissions": ["storage", "activeTab", "scripting", "tabs"],
+  "host_permissions": ["http://*:3000/follow"],
   "background": {
     "service_worker": "background.js"
   }
