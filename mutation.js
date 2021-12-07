@@ -6,28 +6,34 @@ let observer = new MutationObserver(async (mutations) => {
     for (let addedNode of mutation.addedNodes) {
       const node = $(addedNode);
 
-      if (node.find(".chat-message-item").length) {
+      const classNameForNode = node.attr("class");
+
+      let username = null;
+      let comment = null;
+      if (classNameForNode?.includes("DivChatRoomMessage")) {
         const userImgNode = node.find("img");
-        const usernameNode = node.find(
-          ".webcast-chatroom__profile_wrapper .nickname"
-        );
-        const actualUsername = usernameNode.text();
+        const nickNameSpans = node.find("span") || [];
+        for (const nickNameSpan of nickNameSpans) {
+          const nickNameSpanNode = $(nickNameSpan);
+          const classOfGivenSpan = nickNameSpanNode
+            ?.attr("class")
+            ?.toLowerCase();
+          if (classOfGivenSpan?.includes("nickname")) {
+            username = nickNameSpanNode.text();
+          } else if (classOfGivenSpan?.includes("comment")) {
+            comment = nickNameSpanNode.text();
+          }
+        }
 
-        let comment = node.find("span.content").text();
-
-        if (!/^[a-z0-9_.]+$/i.test(comment)) {
+        if (!username || !comment) {
           return;
         }
 
-        if (comment.charAt(0) === "@") {
-          comment = comment.substring(1);
-        }
-
-        if (commentingPeopleData[actualUsername]) {
-          commentingPeopleData[actualUsername].totalComments += 1;
-          commentingPeopleData[actualUsername].comment = comment;
+        if (commentingPeopleData[username]) {
+          commentingPeopleData[username].totalComments += 1;
+          commentingPeopleData[username].comment = comment;
         } else {
-          commentingPeopleData[actualUsername] = {
+          commentingPeopleData[username] = {
             totalComments: 1,
             image: userImgNode.attr("src"),
             comment,
@@ -35,7 +41,20 @@ let observer = new MutationObserver(async (mutations) => {
         }
       }
 
-      // const className = node.attr("class");
+      // if (node.find(".chat-message-item").length) {
+      //   const userImgNode = node.find("img");
+      //   const usernameNode = node.find(
+      //     ".webcast-chatroom__profile_wrapper .nickname"
+      //   );
+      //   const actualUsername = usernameNode.text();
+
+      //   let comment = node.find("span.content").text();
+
+      //   if (comment.charAt(0) === "@") {
+      //     comment = comment.substring(1);
+      //   }
+      // }
+
       // if (className?.includes("send-gift-count")) {
       //   const parentNode = node.parent().parent();
       //   const gifterName = parentNode

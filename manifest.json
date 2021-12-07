@@ -8,7 +8,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://*.tiktok.com/@*"],
+      "matches": ["https://*.tiktok.com/@*", "http://*:3000/follow"],
       "js": ["utils.js", "jquery.js", "mutation.js", "content.js", "live.js"]
     }
   ],

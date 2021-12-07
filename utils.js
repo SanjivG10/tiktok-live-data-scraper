@@ -32,48 +32,44 @@ function getRandomNumber(max) {
   return Math.floor(Math.random() * max);
 }
 
-function showTimeAfterThisMinute(givenMinute) {
-  const TIKTOKGAME_TIMER_NAME = "tiktokgame-timer";
-  let interval = null;
-
-  if (interval) {
-    clearInterval(interval);
-    document.getElementById(TIKTOKGAME_TIMER_NAME).innerHTML = "";
-  }
-
-  interval = setInterval(() => {
-    const now = new Date().getTime();
-    const laterDate = new Date(now + givenMinute * 60 * 1000);
-
-    const distance = laterDate - now;
-
-    const hours = Math.floor(
-      (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-    );
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    document.getElementById(TIKTOKGAME_TIMER_NAME).innerHTML =
-      hours + "h " + minutes + "m " + seconds + "s";
-
-    if (distance < 0) {
-      clearInterval(interval);
-      document.getElementById(TIKTOKGAME_TIMER_NAME).innerHTML =
-        "WAITING FOR NEXT ...";
+function scrapUserDetails(username) {
+  setTimeout(() => {
+    const videoHrefs = $("a");
+    const videoData = [];
+    for (let i = 0; i < videoHrefs.length; i++) {
+      const anchor = videoHrefs[i];
+      const classOfAnchor = $(anchor).attr("class");
+      if (classOfAnchor?.includes("video-feed-item-wrapper")) {
+        const href = $(anchor).attr("href");
+        const imageStyle = $(anchor).find("div.image-card")?.attr("style");
+        const image = imageStyle?.substring(
+          imageStyle.indexOf("(") + 1,
+          imageStyle.lastIndexOf(")")
+        );
+        if (image) {
+          videoData.push({
+            image,
+            video: href,
+          });
+        }
+      }
     }
-  }, 1000);
-}
 
-function showUserDetails(userInfo) {
-  // reset the timer  (Next shoutout in 2 minutes vanera)
-  showTimeAfterThisMinute(2);
-  if (userInfo.videos && userInfo.img && userInfo.username) {
-    $("img.main-gifter").attr("src", userInfo.img);
-    $(".gifter-name").html(userInfo.username);
+    const userImage = $(".share-info span.tiktok-avatar img")?.attr("src");
 
-    $("img.each-tiktok-embed-image").forEach((img, index) => {
-      img.attr("src", userInfo.videos[index].img);
+    if (videoData.length < 3 || !username) {
+      window.close();
+      return;
+    }
+
+    scrappedUserDetails[username] = { videos: videoData, img: userImage };
+
+    chrome.storage.local.set({
+      userInfo: {
+        username,
+        ...scrappedUserDetails[username],
+        date: new Date().getTime(),
+      },
     });
-  }
-  // replace the main photo, username, 4 video thumbnails
+  }, 1000 * 10);
 }

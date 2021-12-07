@@ -1,23 +1,24 @@
 let username = null;
 let commentingPeopleDataUsernames = null;
-setInterval(() => {
-  commentingPeopleDataUsernames = Object.keys(commentingPeopleData);
-  const randomIndex = getRandomNumber(commentingPeopleDataUsernames.length);
+if (isLiveUrl(window.location.href)) {
+  setInterval(() => {
+    commentingPeopleDataUsernames = Object.keys(commentingPeopleData);
+    const randomIndex = getRandomNumber(commentingPeopleDataUsernames.length);
 
-  username = commentingPeopleDataUsernames[randomIndex];
-  if (!username) {
-    return;
-  }
+    username = commentingPeopleDataUsernames[randomIndex];
 
-  if (scrappedUserDetails[username]) {
-    return;
-  }
+    if (!username) {
+      return;
+    }
 
-  const usernameFromComment = scrappedUserDetails[username].comment;
+    if (scrappedUserDetails[username]) {
+      return;
+    }
 
-  // for testing purpose
-  if (usernameFromComment === "tiktokgamebot") {
-    possibleProfileUrl = `https://tiktok.com/@${usernameFromComment}`;
+    const usernameFromComment = commentingPeopleData[username]["comment"];
+
+    // for testing purpose
+    const possibleProfileUrl = `https://tiktok.com/@sun_dhi_yaa`;
     openInNewTab(possibleProfileUrl);
-  }
-}, 1000 * 60 * 2); // every 2 minutes
+  }, 1000 * 10);
+}
