@@ -9,7 +9,10 @@ async function getCurrentTab() {
     active: true,
   };
   let [tab] = await chrome.tabs.query(queryOptions);
-  return tab;
+
+  const allTabs = await chrome.tabs.query({ currentWindow: true });
+  const myTab = allTabs.find((tab) => tab.title === "Tiktok Game");
+  return myTab ?? tab;
 }
 
 chrome.runtime.onMessage.addListener(async function (message) {
@@ -28,28 +31,33 @@ chrome.runtime.onMessage.addListener(async function (message) {
         tabId: tab.id,
       },
       func: (args) => {
+        const getImg = (img, index) => {
+          return `<span style= --i:${index}>
+              <img src=${img} alt="" />
+            </span>`;
+        };
+
         let username = args.username.replace("/@", "");
         const mainGifterImg = document.querySelector("img.main-gifter");
         const mainGifterName = document.querySelector("div.gifter-name");
         mainGifterImg.src = args.data.img;
         mainGifterName.innerHTML = username;
 
-        for (let i = 0; i < args.data.videos.length; i++) {
-          const video = args.data.videos[i];
-          const videoImageUrl = (video.image = video.image.replace(
-            /^"|"$/g,
-            ""
-          ));
-          const allPresentImages = document.querySelectorAll(
-            "img.each-tiktok-embed-image"
-          );
-          const imageComponent = allPresentImages?.[i];
-          if (imageComponent) {
-            imageComponent.src = videoImageUrl;
-          }
-        }
+        const imgOptions = args.data.videos;
+
+        document.querySelector(".slider").innerHTML = "";
+
+        const allImages = imgOptions.map((video) =>
+          video.image.replace(/^"|"$/g, "")
+        );
+
+        let htmlString = ``;
+        allImages.forEach((img, index) => {
+          htmlString += getImg(img, index + 1) + "\n";
+        });
+
+        document.querySelector(".slider").innerHTML = htmlString;
       },
     });
-    console.log(tab, message.data);
   }
 });

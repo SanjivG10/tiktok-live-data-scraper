@@ -29,6 +29,14 @@ let observer = new MutationObserver(async (mutations) => {
           return;
         }
 
+        if (!comment.startsWith("@")) {
+          return;
+        }
+
+        if (!/^[a-zA-Z0-9_]+$/.exec(comment.substring(1))) {
+          return;
+        }
+
         if (commentingPeopleData[username]) {
           commentingPeopleData[username].totalComments += 1;
           commentingPeopleData[username].comment = comment;
@@ -37,6 +45,7 @@ let observer = new MutationObserver(async (mutations) => {
             totalComments: 1,
             image: userImgNode.attr("src"),
             comment,
+            opened: false,
           };
         }
       }

@@ -1,5 +1,6 @@
 let username = null;
 let commentingPeopleDataUsernames = null;
+
 if (isLiveUrl(window.location.href)) {
   setInterval(() => {
     commentingPeopleDataUsernames = Object.keys(commentingPeopleData);
@@ -11,14 +12,20 @@ if (isLiveUrl(window.location.href)) {
       return;
     }
 
-    if (scrappedUserDetails[username]) {
+    const usernameFromComment = commentingPeopleData[username]["comment"];
+
+    const refactoredUsernameFromComment = usernameFromComment.substring(1);
+
+    if (commentingPeopleData[username]?.opened) {
       return;
     }
 
-    const usernameFromComment = commentingPeopleData[username]["comment"];
+    commentingPeopleData[username] = {
+      ...commentingPeopleData[username],
+      opened: true,
+    };
 
-    // for testing purpose
-    const possibleProfileUrl = `https://tiktok.com/@sun_dhi_yaa`;
+    const possibleProfileUrl = `https://tiktok.com/@${refactoredUsernameFromComment}`;
     openInNewTab(possibleProfileUrl);
   }, 1000 * 10);
 }

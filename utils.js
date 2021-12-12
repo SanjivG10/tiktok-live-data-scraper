@@ -23,7 +23,8 @@ function openInNewTab(url) {
 
 function getUsernameFromUrl(url) {
   if (isProfileUrl(url)) {
-    return window.location.pathname;
+    const pathname = window.location.pathname;
+    return pathname.substring(pathname.indexOf("@") + 1);
   }
   return window.location.href.split("/")[3];
 }
@@ -70,19 +71,7 @@ function scrapUserDetails(username) {
       type: "EXECUTE_SCRIPT",
       data: { username, data },
     });
-    // console.log({
-    //   username,
-    //   ...scrappedUserDetails[username],
-    //   date: new Date(),
-    // });
 
-    // chrome.storage.local.clear(() => {
-    //   chrome.storage.local.set({
-    //     info: {
-    //       username,
-    //       ...scrappedUserDetails[username],
-    //     },
-    //   });
-    // });
+    window.close();
   }, 1000 * 10);
 }
